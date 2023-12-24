@@ -7,7 +7,7 @@ export default function Room({
 }: {
   params: { slug: string }
 }) {
-  const { clients } = useWebRTC(slug)
+  const { clients, provideMediaRef } = useWebRTC(slug)
 
   return (
     <div>
@@ -15,6 +15,9 @@ export default function Room({
         return (
           <div key={clientId}>
             <video
+              ref={(ref) => {
+                provideMediaRef(clientId, ref)
+              }}
               autoPlay
               playsInline
               muted={clientId === LOCAL_VIDEO}

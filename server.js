@@ -16,6 +16,7 @@ const ACTIONS = {
   RELAY_SDP: 'relay-sdp',
   RELAY_ICE: 'relay-ice',
   ICE_CANDIDATE: 'ice-candidate',
+  SESSION_DESCRIPTION: 'session-description',
 }
 
 const getClientRooms = () => {
@@ -40,7 +41,7 @@ io.on('connection', (socket) => {
     const { rooms: joinedRooms } = socket
 
     if ([...joinedRooms].includes(roomId)) {
-      return console.warn('Already is connect to room: ', id)
+      return console.warn('Already is connect to room: ', roomId)
     }
 
     const clients = Array.from(io.sockets.adapter.rooms.get(roomId) || [])
@@ -85,7 +86,20 @@ io.on('connection', (socket) => {
 
   socket.on(ACTIONS.LEAVE, leaveRoom)
   socket.on('disconnecting', leaveRoom)
-  console.log('Socket connected')
+
+  socket.on(ACTIONS.RELAY_SDP, ({ peerId, sessionDescription }) => {
+    io.to(peerId).emit(ACTIONS.SESSION_DESCRIPTION, {
+      peerId: socket.id,
+      sessionDescription,
+    })
+  })
+
+  socket.on(ACTIONS.RELAY_ICE, ({ peerId, iceCandidate }) => {
+    io.to(peerId).emit(ACTIONS.ICE_CANDIDATE, {
+      peerId: socket.id,
+      iceCandidate,
+    })
+  })
 })
 
 server.listen(PORT, (e) => {

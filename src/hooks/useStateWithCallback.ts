@@ -8,9 +8,9 @@ import {
 } from 'react'
 
 export const useStateWithCallback = <T>(
-  initialState: T
-): [T, (newState: T, cb: any) => void] => {
-  const [state, setState] = useState<T>(initialState)
+  initialState?: T
+): [T, (newState?: T, cb?: any) => void] => {
+  const [state, setState] = useState<T | undefined>(initialState)
   const cbRef = useRef<any | null>()
 
   const updateState = useCallback((newState: T, cb: any) => {
@@ -28,5 +28,6 @@ export const useStateWithCallback = <T>(
     }
   }, [state])
 
+  // @ts-ignore
   return [state, updateState]
 }

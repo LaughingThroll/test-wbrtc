@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { v4 } from 'uuid'
 import socket from '@/socket'
@@ -10,17 +10,18 @@ import './globals.css'
 export default function Home() {
   const router = useRouter()
   const [rooms, setRooms] = useState([])
+  const rootNode = useRef<HTMLElement>(null)
 
   useEffect(() => {
     socket.on(ACTIONS.SHARE_ROOMS, ({ rooms = [] }: any) => {
-      setRooms(rooms)
-      console.log(rooms)
+      if (rootNode.current) {
+        setRooms(rooms)
+      }
     })
-    console.log('go to server')
   }, [])
 
   return (
-    <main>
+    <main ref={rootNode}>
       <h1>Available Rooms</h1>
       <ul>
         {rooms.map((roomId) => (
