@@ -13,12 +13,12 @@ export default function Home() {
   const rootNode = useRef<HTMLElement>(null)
 
   useEffect(() => {
-    socket.on(ACTIONS.SHARE_ROOMS, ({ rooms = [] }: any) => {
+    socket.on(ACTIONS.SHARE_ROOMS, ({ rooms }: any) => {
       if (rootNode.current) {
         setRooms(rooms)
       }
     })
-  }, [])
+  }, [rooms])
 
   return (
     <main ref={rootNode}>

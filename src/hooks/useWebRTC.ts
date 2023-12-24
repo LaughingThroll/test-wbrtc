@@ -57,11 +57,12 @@ export const useWebRTC = (roomId: string) => {
       }) => {
         tracksNumber++
 
-        if (tracksNumber)
-          // audio and video track {
+        if (tracksNumber) {
+          // audio and video track
           addNewClient(peerId, () => {
             peerMediaElements.current[peerId]!.srcObject = remoteStream
           })
+        }
       }
 
       localMediaStream.current?.getTracks().forEach((track) => {
@@ -140,10 +141,8 @@ export const useWebRTC = (roomId: string) => {
           height: 720,
         },
       })
-
       addNewClient(LOCAL_VIDEO, () => {
         const localVideoElement = peerMediaElements.current[LOCAL_VIDEO]
-
         if (localVideoElement && localMediaStream.current) {
           localVideoElement.volume = 0
           localVideoElement.srcObject = localMediaStream.current
@@ -160,7 +159,6 @@ export const useWebRTC = (roomId: string) => {
       .catch((e) => {
         console.error('Error getting userMedia', e)
       })
-
     return () => {
       localMediaStream.current?.getTracks().forEach((track) => track.stop())
       socket.emit(ACTIONS.LEAVE)
